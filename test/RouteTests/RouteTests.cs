@@ -15,6 +15,8 @@ public class RoutingTests : IDisposable
     private List<Activity> exportedItems;
     private AspNetCoreDiagnosticObserver diagnostics;
 
+    public static IEnumerable<object[]> TestData => RouteTestData.GetTestCases();
+
     public RoutingTests(ITestOutputHelper output)
     {
         this.output = output;
@@ -28,24 +30,16 @@ public class RoutingTests : IDisposable
     }
 
     [Theory]
-    [InlineData(TestApplicationType.ConventionalRouting, "/")]
-    [InlineData(TestApplicationType.ConventionalRouting, "/ConventionalRoute/ActionWithStringParameter/2?num=3")]
-    [InlineData(TestApplicationType.ConventionalRouting, "/ConventionalRoute/NotFound")]
-    [InlineData(TestApplicationType.AttributeRouting, "/AttributeRoute")]
-    [InlineData(TestApplicationType.AttributeRouting, "/AttributeRoute/Get")]
-    [InlineData(TestApplicationType.AttributeRouting, "/AttributeRoute/Boop/asdf")]
-    [InlineData(TestApplicationType.RazorPages, "/")]
-    [InlineData(TestApplicationType.RazorPages, "/Index")]
-    [InlineData(TestApplicationType.RazorPages, "/PageThatThrowsException")]
-    public async void ExampleTest(TestApplicationType config, string path)
+    [MemberData(nameof(TestData))]
+    public async Task<(string summary, string details)> ExampleTest(RouteTestData.RouteTestCase testCase)
     {
-        this.app = TestApplicationFactory.CreateApplication(config);
-        this.app.RunAsync();
+        this.app = TestApplicationFactory.CreateApplication(testCase.TestApplicationScenario);
+        var _ = this.app.RunAsync();
 
         HttpResponseMessage? responseMessage = null;
         string response = string.Empty;
 
-        responseMessage = await this.client.GetAsync(path).ConfigureAwait(false);
+        responseMessage = await this.client.GetAsync(testCase.Path).ConfigureAwait(false);
         response = responseMessage.Content.ReadAsStringAsync().Result;
 
         for (var i = 0; i < 10; i++)
@@ -60,32 +54,27 @@ public class RoutingTests : IDisposable
 
         var activity = this.exportedItems[0];
 
-        output.WriteLine(string.Empty);
-        output.WriteLine($"Path={path}");
-        output.WriteLine(response);
-        output.WriteLine($"StatusCode={activity.GetTagItem("http.status_code")}");
-        output.WriteLine($"Activity.DisplayName={activity.DisplayName}");
-        output.WriteLine($"Activity.HttpRouteAttribute={activity.GetTagItem("http.route")}");
+        output?.WriteLine(string.Empty);
+        output?.WriteLine($"Scenario={testCase.TestApplicationScenario} Path={testCase.Path}");
 
-        // await this.client.GetStringAsync("http://localhost:5000").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/Default").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionWithParameter").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionWithParameter/2").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionWithStringParameter").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionWithStringParameter/2").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionWithStringParameter/2?num=3").ConfigureAwait(false);
+        var statusCode = activity.GetTagItem("http.status_code");
+        Assert.Equal(testCase.ExpectedStatusCode, statusCode);
 
-        // await this.client.GetStringAsync("http://localhost:5000/ControllerNotFound/Action").ConfigureAwait(false);
-        // await this.client.GetStringAsync("http://localhost:5000/Conventional/ActionNotFound").ConfigureAwait(false);
+        output?.WriteLine(response);
+        output?.WriteLine($"StatusCode={activity.GetTagItem("http.status_code")}");
+        output?.WriteLine($"Activity.DisplayName={activity.DisplayName}");
+        output?.WriteLine($"Activity.HttpRouteAttribute={activity.GetTagItem("http.route")}");
 
-        // var expectedActivityName = httpMethod + (!string.IsNullOrEmpty(expectedRoute) ? " " + expectedRoute : string.Empty);
-        // Assert.Equal(expectedActivityName, activity.DisplayName);
-
-        // var actualHttpRoute = activity.GetTagItem("http.route") as string;
-        // Assert.Equal(expectedRoute, actualHttpRoute);
+        return (Bloop(testCase, activity), response);
     }
 
-    
+    private string Bloop(RouteTestData.RouteTestCase testCase, Activity activity)
+    {
+        return $"| {string.Join(" | ",
+            testCase.TestApplicationScenario,
+            $"{testCase.HttpMethod} {testCase.ExpectedHttpRoute}",
+            activity.DisplayName)} |";
+    }
 
     public async void Dispose()
     {

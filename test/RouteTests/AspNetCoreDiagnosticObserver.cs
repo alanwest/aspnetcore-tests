@@ -66,15 +66,16 @@ internal sealed class AspNetCoreDiagnosticObserver : IDisposable, IObserver<Diag
                 info.SetValues(context);
                 context.Items["RouteInfo"] = info;
                 break;
-            case OnStopEvent:
-                context = value.Value as HttpContext;
-                break;
             case OnMvcBeforeActionEvent:
                 actionMethodEventData = value.Value as BeforeActionEventData;
                 Debug.Assert(actionMethodEventData != null);
                 info = actionMethodEventData.HttpContext.Items["RouteInfo"] as RouteInfo;
                 Debug.Assert(info != null);
-                info.SetValues(actionMethodEventData);
+                info.SetValues(actionMethodEventData.HttpContext);
+                info.SetValues(actionMethodEventData.ActionDescriptor);
+                break;
+            case OnStopEvent:
+                // Can't update RouteInfo here because the response is already written.
                 break;
             case OnUnhandledHostingExceptionEvent:
             case OnUnHandledDiagnosticsExceptionEvent:

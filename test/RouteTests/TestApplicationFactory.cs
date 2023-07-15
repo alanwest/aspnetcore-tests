@@ -4,7 +4,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace RouteTests;
 
-public enum TestApplicationType
+public enum TestApplicationScenario
 {
     ConventionalRouting,
     AttributeRouting,
@@ -13,36 +13,44 @@ public enum TestApplicationType
 
 internal class TestApplicationFactory
 {
-    public static WebApplication CreateApplication(TestApplicationType config)
+    private static string ContentRootPath = new FileInfo(typeof(RoutingTests)!.Assembly!.Location)!.Directory!.Parent!.Parent!.Parent!.FullName;
+
+    public static WebApplication CreateApplication(TestApplicationScenario config)
     {
         switch (config)
         {
-            case TestApplicationType.ConventionalRouting:
+            case TestApplicationScenario.ConventionalRouting:
                 return CreateConventionalRoutingApplication();
-            case TestApplicationType.AttributeRouting:
+            case TestApplicationScenario.AttributeRouting:
                 return CreateAttributeRoutingApplication();
-            case TestApplicationType.RazorPages:
+            case TestApplicationScenario.RazorPages:
                 return CreateRazorPagesApplication();
             default:
-                throw new ArgumentException($"Invalid {nameof(TestApplicationType)}");
+                throw new ArgumentException($"Invalid {nameof(TestApplicationScenario)}");
         }
     }
 
     private static WebApplication CreateConventionalRoutingApplication()
     {
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ContentRootPath = ContentRootPath });
         builder.Services
             .AddControllersWithViews()
             .AddApplicationPart(typeof(RoutingTests).Assembly);
 
         var app = builder.Build();
         app.UseExceptionHandler(RouteInfoMiddleware.ConfigureExceptionHandler);
-        app.UseStaticFiles();
         app.UseMiddleware<RouteInfoMiddleware>();
+        app.UseStaticFiles();
         app.UseRouting();
+
+        app.MapControllerRoute(
+            name: "FixedRouteWithConstraints",
+            pattern: "SomePath/{id}/{num:int}",
+            defaults: new { controller = "ConventionalRoute", action = "ActionWithStringParameter" });
+
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Conventional}/{action=Default}/{id?}");
+            pattern: "{controller=ConventionalRoute}/{action=Default}/{id?}");
 
         return app;
     }
@@ -50,7 +58,9 @@ internal class TestApplicationFactory
     private static WebApplication CreateAttributeRoutingApplication()
     {
         var builder = WebApplication.CreateBuilder();
-        builder.Services.AddControllers();
+        builder.Services
+            .AddControllers()
+            .AddApplicationPart(typeof(RoutingTests).Assembly);
 
         var app = builder.Build();
         app.UseExceptionHandler(RouteInfoMiddleware.ConfigureExceptionHandler);
@@ -62,21 +72,19 @@ internal class TestApplicationFactory
 
     private static WebApplication CreateRazorPagesApplication()
     {
-        var contentRoot = new FileInfo(typeof(RoutingTests).Assembly.Location).Directory.Parent.Parent.Parent.FullName;
-
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ContentRootPath = ContentRootPath });
         builder.Services
             .AddRazorPages()
             .AddRazorRuntimeCompilation(options =>
             {
-                options.FileProviders.Add(new PhysicalFileProvider(contentRoot));
+                options.FileProviders.Add(new PhysicalFileProvider(ContentRootPath));
             })
-            .AddApplicationPart(typeof(RoutingTests).Assembly);;
+            .AddApplicationPart(typeof(RoutingTests).Assembly);
 
         var app = builder.Build();
         app.UseExceptionHandler(RouteInfoMiddleware.ConfigureExceptionHandler);
-        app.UseStaticFiles();
         app.UseMiddleware<RouteInfoMiddleware>();
+        app.UseStaticFiles();
         app.UseRouting();
         app.MapRazorPages();
 

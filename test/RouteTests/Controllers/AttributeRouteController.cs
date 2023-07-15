@@ -11,5 +11,8 @@ public class AttributeRouteController : ControllerBase
     public IActionResult Get() => Ok();
 
     [HttpGet("[action]/{id}")]
-    public IActionResult Boop(int id) => throw new NotImplementedException();
+    public IActionResult Get(int id) => Ok();
+
+    [HttpGet("{id}/[action]")]
+    public IActionResult GetWithActionNameInDifferentSpotInTemplate(int id) => Ok();
 }
