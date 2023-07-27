@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="testcases.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 

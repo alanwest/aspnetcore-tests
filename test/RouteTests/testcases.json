@@ -32,49 +32,49 @@
         "httpMethod": "GET",
         "path": "/SomePath/SomeString/2",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "/SomePath/SomeString/{id?}"
+        "expectedHttpRoute": "SomePath/{id}/{num:int}"
     },
     {
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
         "path": "/SomePath/SomeString/NotAnInt",
         "expectedStatusCode": 404,
-        "expectedHttpRoute": "/SomePath/SomeString/{id?}"
+        "expectedHttpRoute": ""
     },
     {
         "testApplicationScenario": "AttributeRouting",
         "httpMethod": "GET",
         "path": "/AttributeRoute",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "/AttributeRoute"
+        "expectedHttpRoute": "AttributeRoute"
     },
     {
         "testApplicationScenario": "AttributeRouting",
         "httpMethod": "GET",
         "path": "/AttributeRoute/Get",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "/AttributeRoute/Get"
+        "expectedHttpRoute": "AttributeRoute/Get"
     },
     {
         "testApplicationScenario": "AttributeRouting",
         "httpMethod": "GET",
         "path": "/AttributeRoute/Get/12",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "/AttributeRoute/Get/{id?}"
+        "expectedHttpRoute": "AttributeRoute/Get/{id?}"
     },
     {
         "testApplicationScenario": "AttributeRouting",
         "httpMethod": "GET",
         "path": "/AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "/AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate"
+        "expectedHttpRoute": "AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate"
     },
     {
         "testApplicationScenario": "AttributeRouting",
         "httpMethod": "GET",
         "path": "/AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate",
         "expectedStatusCode": 400,
-        "expectedHttpRoute": "/AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate"
+        "expectedHttpRoute": "AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate"
     },
     {
         "testApplicationScenario": "RazorPages",

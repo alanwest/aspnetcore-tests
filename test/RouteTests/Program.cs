@@ -34,7 +34,7 @@ for (var i = 0; i < results.Count; ++i)
     sb.AppendLine("```");
 }
 
-File.WriteAllText("beep.md", sb.ToString());
+File.WriteAllText("README.md", sb.ToString());
 
 string FormatTestResult(TestResult result)
 {

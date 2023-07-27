@@ -49,7 +49,7 @@ public class RouteInfo
             }
 
             var paramList = string.Join(string.Empty, this.DebugInfo.ActionParameters!.Select(p => $"/{{{p}}}"));
-            return $"/{this.DebugInfo.ControllerActionDescriptorControllerName}/{this.DebugInfo.ControllerActionDescriptorActionName}{paramList}";
+            return $"{this.DebugInfo.ControllerActionDescriptorControllerName}/{this.DebugInfo.ControllerActionDescriptorActionName}{paramList}";
         }
     }
 
@@ -74,7 +74,7 @@ public class RouteInfo
             }
             else if (this.DebugInfo.RawText != null && hasPageActionDescriptor)
             {
-                result = this.DebugInfo.PageActionDescriptorRelativePath!;
+                result = this.DebugInfo.PageActionDescriptorViewEnginePath!;
             }
 
             return result;
