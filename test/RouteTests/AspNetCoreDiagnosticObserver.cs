@@ -6,25 +6,9 @@ namespace RouteTests;
 
 internal sealed class AspNetCoreDiagnosticObserver : IDisposable, IObserver<DiagnosticListener>, IObserver<KeyValuePair<string, object?>>
 {
-    internal const string ActivityOperationName = "Microsoft.AspNetCore.Hosting.HttpRequestIn";
     internal const string OnStartEvent = "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start";
     internal const string OnStopEvent = "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop";
     internal const string OnMvcBeforeActionEvent = "Microsoft.AspNetCore.Mvc.BeforeAction";
-    internal const string OnUnhandledHostingExceptionEvent = "Microsoft.AspNetCore.Hosting.UnhandledException";
-    internal const string OnUnHandledDiagnosticsExceptionEvent = "Microsoft.AspNetCore.Diagnostics.UnhandledException";
-
-    private static readonly HashSet<string> DiagnosticSourceEvents = new()
-    {
-        "Microsoft.AspNetCore.Hosting.HttpRequestIn",
-        "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start",
-        "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop",
-        "Microsoft.AspNetCore.Mvc.BeforeAction",
-        "Microsoft.AspNetCore.Diagnostics.UnhandledException",
-        "Microsoft.AspNetCore.Hosting.UnhandledException",
-    };
-
-    private readonly Func<string, object?, object?, bool> isEnabledFilter = (eventName, _, _)
-        => true; // DiagnosticSourceEvents.Contains(eventName);
 
     private readonly List<IDisposable> listenerSubscriptions;
     private IDisposable? allSourcesSubscription;
@@ -40,9 +24,7 @@ internal sealed class AspNetCoreDiagnosticObserver : IDisposable, IObserver<Diag
     {
         if (value.Name == "Microsoft.AspNetCore")
         {
-            var subscription = this.isEnabledFilter == null
-                ? value.Subscribe(this)
-                : value.Subscribe(this, this.isEnabledFilter);
+            var subscription = value.Subscribe(this);
 
             lock (this.listenerSubscriptions)
             {
@@ -77,8 +59,6 @@ internal sealed class AspNetCoreDiagnosticObserver : IDisposable, IObserver<Diag
             case OnStopEvent:
                 // Can't update RouteInfo here because the response is already written.
                 break;
-            case OnUnhandledHostingExceptionEvent:
-            case OnUnHandledDiagnosticsExceptionEvent:
             default:
                 break;
         }

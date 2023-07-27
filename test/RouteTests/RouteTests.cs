@@ -1,50 +1,62 @@
 using System.Diagnostics;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using OpenTelemetry;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Xunit.Abstractions;
 
 namespace RouteTests;
 
 public class RoutingTests : IDisposable
 {
-    private readonly ITestOutputHelper output;
     private TracerProvider tracerProvider;
+    private MeterProvider meterProvider;
     private WebApplication? app;
     private HttpClient client;
-    private List<Activity> exportedItems;
+    private List<Activity> exportedActivities;
+    private List<Metric> exportedMetrics;
     private AspNetCoreDiagnosticObserver diagnostics;
+
+    private static string HttpStatusCode = "http.status_code";
+    private static string HttpMethod = "http.method";
+    private static string HttpRoute = "http.route";
 
     public static IEnumerable<object[]> TestData => RouteTestData.GetTestCases();
 
-    public RoutingTests(ITestOutputHelper output)
+    public RoutingTests()
     {
-        this.output = output;
         this.diagnostics = new AspNetCoreDiagnosticObserver();
-        this.exportedItems = new List<Activity>();
         this.client = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
+
+        this.exportedActivities = new List<Activity>();
+        this.exportedMetrics = new List<Metric>();
+
         this.tracerProvider = Sdk.CreateTracerProviderBuilder()
             .AddAspNetCoreInstrumentation()
-            .AddInMemoryExporter(this.exportedItems)
+            .AddInMemoryExporter(this.exportedActivities)
+            .Build()!;
+
+        this.meterProvider = Sdk.CreateMeterProviderBuilder()
+            .AddAspNetCoreInstrumentation()
+            .AddInMemoryExporter(this.exportedMetrics)
             .Build()!;
     }
 
     [Theory]
     [MemberData(nameof(TestData))]
-    public async Task<(string summary, string details)> ExampleTest(RouteTestData.RouteTestCase testCase)
+    public async Task<TestResult> TestRoutes(RouteTestData.RouteTestCase testCase, bool skipAsserts = true)
     {
         this.app = TestApplicationFactory.CreateApplication(testCase.TestApplicationScenario);
         var _ = this.app.RunAsync();
 
-        HttpResponseMessage? responseMessage = null;
-        string response = string.Empty;
+        var responseMessage = await this.client.GetAsync(testCase.Path).ConfigureAwait(false);
+        var response = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        responseMessage = await this.client.GetAsync(testCase.Path).ConfigureAwait(false);
-        response = responseMessage.Content.ReadAsStringAsync().Result;
+        var info = JsonSerializer.Deserialize<RouteInfo>(response);
 
         for (var i = 0; i < 10; i++)
         {
-            if (this.exportedItems.Count > 0)
+            if (this.exportedActivities.Count > 0)
             {
                 break;
             }
@@ -52,38 +64,91 @@ public class RoutingTests : IDisposable
             await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
         }
 
-        var activity = this.exportedItems[0];
+        this.meterProvider.ForceFlush();
 
-        output?.WriteLine(string.Empty);
-        output?.WriteLine($"Scenario={testCase.TestApplicationScenario} Path={testCase.Path}");
+        Assert.Single(this.exportedActivities);
+        Assert.Single(this.exportedMetrics);
+        
+        var metricPoints = new List<MetricPoint>();
+        foreach (var mp in this.exportedMetrics[0].GetMetricPoints())
+        {
+            metricPoints.Add(mp);
+        }
 
-        var statusCode = activity.GetTagItem("http.status_code");
-        Assert.Equal(testCase.ExpectedStatusCode, statusCode);
+        Assert.Single(metricPoints);
 
-        output?.WriteLine(response);
-        output?.WriteLine($"StatusCode={activity.GetTagItem("http.status_code")}");
-        output?.WriteLine($"Activity.DisplayName={activity.DisplayName}");
-        output?.WriteLine($"Activity.HttpRouteAttribute={activity.GetTagItem("http.route")}");
+        var activity = this.exportedActivities[0];
+        var metricPoint = metricPoints.First();
 
-        return (Bloop(testCase, activity), response);
-    }
+        GetTagsFromActivity(activity, out var activityHttpStatusCode, out var activityHttpMethod, out var activityHttpRoute);
+        GetTagsFromMetricPoint(metricPoint, out var metricHttpStatusCode, out var metricHttpMethod, out var metricHttpRoute);
 
-    private string Bloop(RouteTestData.RouteTestCase testCase, Activity activity)
-    {
-        return $"| {string.Join(" | ",
-            testCase.TestApplicationScenario,
-            $"{testCase.HttpMethod} {testCase.ExpectedHttpRoute}",
-            activity.DisplayName)} |";
+        Assert.Equal(testCase.ExpectedStatusCode, activityHttpStatusCode);
+        Assert.Equal(testCase.ExpectedStatusCode, metricHttpStatusCode);
+        Assert.Equal(testCase.HttpMethod, activityHttpMethod);
+        Assert.Equal(testCase.HttpMethod, metricHttpMethod);
+
+        if (!skipAsserts)
+        {
+            Assert.Equal(testCase.ExpectedHttpRoute, activityHttpRoute);
+            Assert.Equal(testCase.ExpectedHttpRoute, metricHttpRoute);
+
+            var expectedActivityDisplayName = string.IsNullOrEmpty(testCase.ExpectedHttpRoute)
+                ? testCase.HttpMethod
+                : $"{testCase.HttpMethod} {testCase.ExpectedHttpRoute}";
+            Assert.Equal(expectedActivityDisplayName, activity.DisplayName);
+        }
+
+        return new TestResult
+        {
+            ActivityDisplayName = activity.DisplayName,
+            HttpStatusCode = activityHttpStatusCode,
+            HttpMethod = activityHttpMethod,
+            HttpRoute = activityHttpRoute,
+            RouteInfo = info!,
+            TestCase = testCase,
+        };
     }
 
     public async void Dispose()
     {
         this.tracerProvider.Dispose();
+        this.meterProvider.Dispose();
         this.diagnostics.Dispose();
         this.client.Dispose();
         if (this.app != null)
         {
             await this.app.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    private void GetTagsFromActivity(Activity activity, out int httpStatusCode, out string httpMethod, out string? httpRoute)
+    {
+        httpStatusCode = Convert.ToInt32(activity.GetTagItem(HttpStatusCode));
+        httpMethod = (activity.GetTagItem(HttpMethod) as string)!;
+        httpRoute = activity.GetTagItem(HttpRoute) as string;
+    }
+
+    private void GetTagsFromMetricPoint(MetricPoint metricPoint, out int httpStatusCode, out string httpMethod, out string? httpRoute)
+    {
+        httpStatusCode = 0;
+        httpMethod = string.Empty;
+        httpRoute = null;
+
+        foreach (var tag in metricPoint.Tags)
+        {
+            if (tag.Key.Equals(HttpStatusCode))
+            {
+                httpStatusCode = Convert.ToInt32(tag.Value);
+            }
+            else if (tag.Key.Equals(HttpMethod))
+            {
+                httpMethod = (tag.Value as string)!;
+            }
+            else if (tag.Key.Equals(HttpRoute))
+            {
+                httpRoute = tag.Value as string;
+            }
         }
     }
 }

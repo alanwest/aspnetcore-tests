@@ -40,6 +40,7 @@ public class RouteInfoMiddleware
         await writer.WriteAsync(modifiedResponse);
         await writer.FlushAsync();
         response.ContentLength = stream.Length;
+        response.ContentType = "application/json";
         
         newBody.Seek(0, SeekOrigin.Begin);
         await newBody.CopyToAsync(originBody);
