@@ -1,5 +1,6 @@
 [
     {
+        "debug": true,
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
         "path": "/",
@@ -39,6 +40,20 @@
         "httpMethod": "GET",
         "path": "/SomePath/SomeString/NotAnInt",
         "expectedStatusCode": 404,
+        "expectedHttpRoute": ""
+    },
+    {
+        "testApplicationScenario": "ConventionalRouting",
+        "httpMethod": "GET",
+        "path": "/MyArea",
+        "expectedStatusCode": 200,
+        "expectedHttpRoute": ""
+    },
+    {
+        "testApplicationScenario": "ConventionalRouting",
+        "httpMethod": "GET",
+        "path": "/Dude",
+        "expectedStatusCode": 200,
         "expectedHttpRoute": ""
     },
     {
@@ -101,6 +116,20 @@
         "testApplicationScenario": "RazorPages",
         "httpMethod": "GET",
         "path": "/js/site.js",
+        "expectedStatusCode": 200,
+        "expectedHttpRoute": ""
+    },
+    {
+        "testApplicationScenario": "MinimalApi",
+        "httpMethod": "GET",
+        "path": "/MinimalApi",
+        "expectedStatusCode": 200,
+        "expectedHttpRoute": ""
+    },
+    {
+        "testApplicationScenario": "MinimalApi",
+        "httpMethod": "GET",
+        "path": "/MinimalApi/123",
         "expectedStatusCode": 200,
         "expectedHttpRoute": ""
     }

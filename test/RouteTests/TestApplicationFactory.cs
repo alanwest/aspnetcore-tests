@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
@@ -8,6 +9,7 @@ public enum TestApplicationScenario
 {
     ConventionalRouting,
     AttributeRouting,
+    MinimalApi,
     RazorPages,
 }
 
@@ -23,6 +25,8 @@ internal class TestApplicationFactory
                 return CreateConventionalRoutingApplication();
             case TestApplicationScenario.AttributeRouting:
                 return CreateAttributeRoutingApplication();
+            case TestApplicationScenario.MinimalApi:
+                return CreateMinimalApiApplication();
             case TestApplicationScenario.RazorPages:
                 return CreateRazorPagesApplication();
             default:
@@ -42,6 +46,15 @@ internal class TestApplicationFactory
         app.UseMiddleware<RouteInfoMiddleware>();
         app.UseStaticFiles();
         app.UseRouting();
+
+        app.MapAreaControllerRoute(
+            name: "AnotherArea",
+            areaName: "AnotherArea",
+            pattern: "Dude/{controller=AnotherArea}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            name: "MyArea",
+            pattern: "{area:exists}/{controller=MyArea}/{action=Default}/{id?}");
 
         app.MapControllerRoute(
             name: "FixedRouteWithConstraints",
@@ -66,6 +79,21 @@ internal class TestApplicationFactory
         app.UseExceptionHandler(RouteInfoMiddleware.ConfigureExceptionHandler);
         app.UseMiddleware<RouteInfoMiddleware>();
         app.MapControllers();
+
+        return app;
+    }
+
+    private static WebApplication CreateMinimalApiApplication()
+    {
+        var builder = WebApplication.CreateSlimBuilder();
+
+        var app = builder.Build();
+        app.UseExceptionHandler(RouteInfoMiddleware.ConfigureExceptionHandler);
+        app.UseMiddleware<RouteInfoMiddleware>();
+
+        var api = app.MapGroup("/MinimalApi");
+        api.MapGet("/", () => Results.Ok());
+        api.MapGet("/{id}", (int id) => Results.Ok());
 
         return app;
     }
