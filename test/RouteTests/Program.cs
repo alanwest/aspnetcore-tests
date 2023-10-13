@@ -15,16 +15,16 @@ foreach (var item in testCases)
     results.Add(result);
 }
 
-sb.AppendLine("| | http.route | expected | routing type | request |");
-sb.AppendLine("| - | - | - | - | - |");
+sb.AppendLine("| | | http.route | expected | routing type | request |");
+sb.AppendLine("| - | - | - | - | - | - |");
 
 for (var i = 0; i < results.Count; ++i)
 {
     var result = results[i];
-    var emoji = result.HttpRoute == result.TestCase.ExpectedHttpRoute
+    var emoji = result.HttpRoute.Equals(result.TestCase.ExpectedHttpRoute, StringComparison.InvariantCulture)
         ? ":green_heart:"
         : ":broken_heart:";
-    sb.Append($"| {emoji} [{i + 1}](#{i + 1}) ");
+    sb.Append($"| {emoji} | [{i + 1}](#{i + 1}) ");
     sb.AppendLine(FormatTestResult(results[i]));
 }
 

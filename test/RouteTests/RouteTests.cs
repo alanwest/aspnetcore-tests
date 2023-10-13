@@ -126,14 +126,14 @@ public class RoutingTests : IDisposable
     {
         httpStatusCode = Convert.ToInt32(activity.GetTagItem(HttpStatusCode));
         httpMethod = (activity.GetTagItem(HttpMethod) as string)!;
-        httpRoute = activity.GetTagItem(HttpRoute) as string;
+        httpRoute = activity.GetTagItem(HttpRoute) as string ?? string.Empty;
     }
 
     private void GetTagsFromMetricPoint(MetricPoint metricPoint, out int httpStatusCode, out string httpMethod, out string? httpRoute)
     {
         httpStatusCode = 0;
         httpMethod = string.Empty;
-        httpRoute = null;
+        httpRoute = string.Empty;
 
         foreach (var tag in metricPoint.Tags)
         {
