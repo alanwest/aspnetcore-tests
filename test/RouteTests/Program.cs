@@ -21,7 +21,7 @@ sb.AppendLine("| - | - | - | - | - | - |");
 for (var i = 0; i < results.Count; ++i)
 {
     var result = results[i];
-    var emoji = result.HttpRoute.Equals(result.TestCase.ExpectedHttpRoute, StringComparison.InvariantCulture)
+    var emoji = result.ActivityDisplayName.Equals(result.TestCase.ExpectedHttpRoute, StringComparison.InvariantCulture)
         ? ":green_heart:"
         : ":broken_heart:";
     sb.Append($"| {emoji} | [{i + 1}](#{i + 1}) ");
@@ -45,8 +45,8 @@ string FormatTestResult(TestResult result)
     var testCase = result.TestCase!;
 
     return $"| {string.Join(" | ",
+        result.ActivityDisplayName, // TODO: should be result.HttpRoute, but http.route is not currently added to Activity
         testCase.ExpectedHttpRoute,
-        result.HttpRoute,
         testCase.TestApplicationScenario,
         $"{testCase.HttpMethod} {testCase.Path}",
         result.ActivityDisplayName)} |";
