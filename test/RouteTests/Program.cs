@@ -15,7 +15,7 @@ foreach (var item in testCases)
     results.Add(result);
 }
 
-sb.AppendLine("| | | http.route | expected | routing type | request |");
+sb.AppendLine("| | | display name | expected name (w/o http.method) | routing type | request |");
 sb.AppendLine("| - | - | - | - | - | - |");
 
 for (var i = 0; i < results.Count; ++i)

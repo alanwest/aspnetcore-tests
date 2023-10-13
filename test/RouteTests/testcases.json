@@ -46,21 +46,21 @@
         "httpMethod": "GET",
         "path": "/MyArea",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": ""
+        "expectedHttpRoute": "{area:exists}/ControllerForMyArea/Default/{id?}"
     },
     {
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
         "path": "/MyArea/ControllerForMyArea/NonDefault",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": ""
+        "expectedHttpRoute": "{area:exists}/ControllerForMyArea/NonDefault/{id?}"
     },
     {
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
         "path": "/SomePrefix",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": ""
+        "expectedHttpRoute": "SomePrefix/AnotherArea/Index/{id?}"
     },
     {
         "testApplicationScenario": "AttributeRouting",
@@ -81,7 +81,7 @@
         "httpMethod": "GET",
         "path": "/AttributeRoute/Get/12",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": "AttributeRoute/Get/{id?}"
+        "expectedHttpRoute": "AttributeRoute/Get/{id}"
     },
     {
         "testApplicationScenario": "AttributeRouting",

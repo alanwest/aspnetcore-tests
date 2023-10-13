@@ -1,4 +1,4 @@
-| | | http.route | expected | routing type | request |
+| | | display name | expected name (w/o http.method) | routing type | request |
 | - | - | - | - | - | - |
 | :broken_heart: | [1](#1) | / | ConventionalRoute/Default/{id?} | ConventionalRouting | GET / | / |
 | :broken_heart: | [2](#2) | /ConventionalRoute/ActionWithStringParameter/2 | ConventionalRoute/ActionWithStringParameter/{id?} | ConventionalRouting | GET /ConventionalRoute/ActionWithStringParameter/2?num=3 | /ConventionalRoute/ActionWithStringParameter/2 |
@@ -6,12 +6,12 @@
 | :broken_heart: | [4](#4) | /ConventionalRoute/NotFound |  | ConventionalRouting | GET /ConventionalRoute/NotFound | /ConventionalRoute/NotFound |
 | :broken_heart: | [5](#5) | /SomePath/SomeString/2 | SomePath/{id}/{num:int} | ConventionalRouting | GET /SomePath/SomeString/2 | /SomePath/SomeString/2 |
 | :broken_heart: | [6](#6) | /SomePath/SomeString/NotAnInt |  | ConventionalRouting | GET /SomePath/SomeString/NotAnInt | /SomePath/SomeString/NotAnInt |
-| :broken_heart: | [7](#7) | /MyArea |  | ConventionalRouting | GET /MyArea | /MyArea |
-| :broken_heart: | [8](#8) | /MyArea/ControllerForMyArea/NonDefault |  | ConventionalRouting | GET /MyArea/ControllerForMyArea/NonDefault | /MyArea/ControllerForMyArea/NonDefault |
-| :broken_heart: | [9](#9) | /SomePrefix |  | ConventionalRouting | GET /SomePrefix | /SomePrefix |
+| :broken_heart: | [7](#7) | /MyArea | {area:exists}/ControllerForMyArea/Default/{id?} | ConventionalRouting | GET /MyArea | /MyArea |
+| :broken_heart: | [8](#8) | /MyArea/ControllerForMyArea/NonDefault | {area:exists}/ControllerForMyArea/NonDefault/{id?} | ConventionalRouting | GET /MyArea/ControllerForMyArea/NonDefault | /MyArea/ControllerForMyArea/NonDefault |
+| :broken_heart: | [9](#9) | /SomePrefix | SomePrefix/AnotherArea/Index/{id?} | ConventionalRouting | GET /SomePrefix | /SomePrefix |
 | :green_heart: | [10](#10) | AttributeRoute | AttributeRoute | AttributeRouting | GET /AttributeRoute | AttributeRoute |
 | :green_heart: | [11](#11) | AttributeRoute/Get | AttributeRoute/Get | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get |
-| :broken_heart: | [12](#12) | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} |
+| :green_heart: | [12](#12) | AttributeRoute/Get/{id} | AttributeRoute/Get/{id} | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} |
 | :green_heart: | [13](#13) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
 | :green_heart: | [14](#14) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
 | :broken_heart: | [15](#15) | / | /Index | RazorPages | GET / | / |
