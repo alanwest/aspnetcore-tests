@@ -51,7 +51,7 @@
     {
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
-        "path": "/Dude",
+        "path": "/SomePrefix",
         "expectedStatusCode": 200,
         "expectedHttpRoute": ""
     },

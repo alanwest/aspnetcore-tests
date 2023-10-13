@@ -7,7 +7,7 @@
 | :broken_heart: | [5](#5) | /SomePath/SomeString/2 | SomePath/{id}/{num:int} | ConventionalRouting | GET /SomePath/SomeString/2 | /SomePath/SomeString/2 |
 | :broken_heart: | [6](#6) | /SomePath/SomeString/NotAnInt |  | ConventionalRouting | GET /SomePath/SomeString/NotAnInt | /SomePath/SomeString/NotAnInt |
 | :broken_heart: | [7](#7) | /MyArea |  | ConventionalRouting | GET /MyArea | /MyArea |
-| :broken_heart: | [8](#8) | /Dude |  | ConventionalRouting | GET /Dude | /Dude |
+| :broken_heart: | [8](#8) | /SomePrefix |  | ConventionalRouting | GET /SomePrefix | /SomePrefix |
 | :green_heart: | [9](#9) | AttributeRoute | AttributeRoute | AttributeRouting | GET /AttributeRoute | AttributeRoute |
 | :green_heart: | [10](#10) | AttributeRoute/Get | AttributeRoute/Get | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get |
 | :broken_heart: | [11](#11) | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} |
@@ -214,13 +214,13 @@
 ```json
 {
   "HttpMethod": "GET",
-  "Path": "/Dude",
-  "HttpRouteByRawText": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
+  "Path": "/SomePrefix",
+  "HttpRouteByRawText": "SomePrefix/{controller=AnotherArea}/{action=Index}/{id?}",
   "HttpRouteByControllerActionAndParameters": "AnotherArea/Index",
-  "HttpRouteByActionDescriptor": "Dude/AnotherArea/Index/{id?}",
+  "HttpRouteByActionDescriptor": "SomePrefix/AnotherArea/Index/{id?}",
   "DebugInfo": {
-    "RawText": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
-    "RouteDiagnosticMetadata": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
+    "RawText": "SomePrefix/{controller=AnotherArea}/{action=Index}/{id?}",
+    "RouteDiagnosticMetadata": "SomePrefix/{controller=AnotherArea}/{action=Index}/{id?}",
     "RouteData": {
       "area": "AnotherArea",
       "controller": "AnotherArea",
