@@ -51,6 +51,13 @@
     {
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
+        "path": "/MyArea/ControllerForMyArea/NonDefault",
+        "expectedStatusCode": 200,
+        "expectedHttpRoute": ""
+    },
+    {
+        "testApplicationScenario": "ConventionalRouting",
+        "httpMethod": "GET",
         "path": "/SomePrefix",
         "expectedStatusCode": 200,
         "expectedHttpRoute": ""

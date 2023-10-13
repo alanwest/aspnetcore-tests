@@ -7,18 +7,19 @@
 | :broken_heart: | [5](#5) | /SomePath/SomeString/2 | SomePath/{id}/{num:int} | ConventionalRouting | GET /SomePath/SomeString/2 | /SomePath/SomeString/2 |
 | :broken_heart: | [6](#6) | /SomePath/SomeString/NotAnInt |  | ConventionalRouting | GET /SomePath/SomeString/NotAnInt | /SomePath/SomeString/NotAnInt |
 | :broken_heart: | [7](#7) | /MyArea |  | ConventionalRouting | GET /MyArea | /MyArea |
-| :broken_heart: | [8](#8) | /SomePrefix |  | ConventionalRouting | GET /SomePrefix | /SomePrefix |
-| :green_heart: | [9](#9) | AttributeRoute | AttributeRoute | AttributeRouting | GET /AttributeRoute | AttributeRoute |
-| :green_heart: | [10](#10) | AttributeRoute/Get | AttributeRoute/Get | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get |
-| :broken_heart: | [11](#11) | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} |
-| :green_heart: | [12](#12) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
-| :green_heart: | [13](#13) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
-| :broken_heart: | [14](#14) | / | /Index | RazorPages | GET / | / |
-| :broken_heart: | [15](#15) | Index | /Index | RazorPages | GET /Index | Index |
-| :broken_heart: | [16](#16) | PageThatThrowsException | /PageThatThrowsException | RazorPages | GET /PageThatThrowsException | PageThatThrowsException |
-| :broken_heart: | [17](#17) | /js/site.js |  | RazorPages | GET /js/site.js | /js/site.js |
-| :broken_heart: | [18](#18) | /MinimalApi |  | MinimalApi | GET /MinimalApi | /MinimalApi |
-| :broken_heart: | [19](#19) | /MinimalApi/123 |  | MinimalApi | GET /MinimalApi/123 | /MinimalApi/123 |
+| :broken_heart: | [8](#8) | /MyArea/ControllerForMyArea/NonDefault |  | ConventionalRouting | GET /MyArea/ControllerForMyArea/NonDefault | /MyArea/ControllerForMyArea/NonDefault |
+| :broken_heart: | [9](#9) | /SomePrefix |  | ConventionalRouting | GET /SomePrefix | /SomePrefix |
+| :green_heart: | [10](#10) | AttributeRoute | AttributeRoute | AttributeRouting | GET /AttributeRoute | AttributeRoute |
+| :green_heart: | [11](#11) | AttributeRoute/Get | AttributeRoute/Get | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get |
+| :broken_heart: | [12](#12) | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} |
+| :green_heart: | [13](#13) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
+| :green_heart: | [14](#14) | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRouting | GET /AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate |
+| :broken_heart: | [15](#15) | / | /Index | RazorPages | GET / | / |
+| :broken_heart: | [16](#16) | Index | /Index | RazorPages | GET /Index | Index |
+| :broken_heart: | [17](#17) | PageThatThrowsException | /PageThatThrowsException | RazorPages | GET /PageThatThrowsException | PageThatThrowsException |
+| :broken_heart: | [18](#18) | /js/site.js |  | RazorPages | GET /js/site.js | /js/site.js |
+| :broken_heart: | [19](#19) | /MinimalApi |  | MinimalApi | GET /MinimalApi | /MinimalApi |
+| :broken_heart: | [20](#20) | /MinimalApi/123 |  | MinimalApi | GET /MinimalApi/123 | /MinimalApi/123 |
 
 #### 1
 
@@ -188,14 +189,14 @@
 {
   "HttpMethod": "GET",
   "Path": "/MyArea",
-  "HttpRouteByRawText": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
-  "HttpRouteByControllerActionAndParameters": "MyArea/Default",
-  "HttpRouteByActionDescriptor": "{area:exists}/MyArea/Default/{id?}",
+  "HttpRouteByRawText": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
+  "HttpRouteByControllerActionAndParameters": "ControllerForMyArea/Default",
+  "HttpRouteByActionDescriptor": "{area:exists}/ControllerForMyArea/Default/{id?}",
   "DebugInfo": {
-    "RawText": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
-    "RouteDiagnosticMetadata": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
+    "RawText": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
+    "RouteDiagnosticMetadata": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
     "RouteData": {
-      "controller": "MyArea",
+      "controller": "ControllerForMyArea",
       "action": "Default",
       "area": "MyArea"
     },
@@ -203,13 +204,40 @@
     "ActionParameters": [],
     "PageActionDescriptorRelativePath": null,
     "PageActionDescriptorViewEnginePath": null,
-    "ControllerActionDescriptorControllerName": "MyArea",
+    "ControllerActionDescriptorControllerName": "ControllerForMyArea",
     "ControllerActionDescriptorActionName": "Default"
   }
 }
 ```
 
 #### 8
+
+```json
+{
+  "HttpMethod": "GET",
+  "Path": "/MyArea/ControllerForMyArea/NonDefault",
+  "HttpRouteByRawText": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
+  "HttpRouteByControllerActionAndParameters": "ControllerForMyArea/NonDefault",
+  "HttpRouteByActionDescriptor": "{area:exists}/ControllerForMyArea/NonDefault/{id?}",
+  "DebugInfo": {
+    "RawText": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
+    "RouteDiagnosticMetadata": "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}",
+    "RouteData": {
+      "controller": "ControllerForMyArea",
+      "area": "MyArea",
+      "action": "NonDefault"
+    },
+    "AttributeRouteInfo": null,
+    "ActionParameters": [],
+    "PageActionDescriptorRelativePath": null,
+    "PageActionDescriptorViewEnginePath": null,
+    "ControllerActionDescriptorControllerName": "ControllerForMyArea",
+    "ControllerActionDescriptorActionName": "NonDefault"
+  }
+}
+```
+
+#### 9
 
 ```json
 {
@@ -236,7 +264,7 @@
 }
 ```
 
-#### 9
+#### 10
 
 ```json
 {
@@ -262,7 +290,7 @@
 }
 ```
 
-#### 10
+#### 11
 
 ```json
 {
@@ -288,7 +316,7 @@
 }
 ```
 
-#### 11
+#### 12
 
 ```json
 {
@@ -317,7 +345,7 @@
 }
 ```
 
-#### 12
+#### 13
 
 ```json
 {
@@ -346,7 +374,7 @@
 }
 ```
 
-#### 13
+#### 14
 
 ```json
 {
@@ -375,7 +403,7 @@
 }
 ```
 
-#### 14
+#### 15
 
 ```json
 {
@@ -400,7 +428,7 @@
 }
 ```
 
-#### 15
+#### 16
 
 ```json
 {
@@ -425,7 +453,7 @@
 }
 ```
 
-#### 16
+#### 17
 
 ```json
 {
@@ -450,7 +478,7 @@
 }
 ```
 
-#### 17
+#### 18
 
 ```json
 {
@@ -473,7 +501,7 @@
 }
 ```
 
-#### 18
+#### 19
 
 ```json
 {
@@ -496,7 +524,7 @@
 }
 ```
 
-#### 19
+#### 20
 
 ```json
 {

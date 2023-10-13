@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace RouteTests.Controllers;
 
 [Area("MyArea")]
-public class MyAreaController : Controller
+public class ControllerForMyAreaController : Controller
 {
     public IActionResult Default() => Ok();
+
+    public IActionResult NonDefault() => Ok();
 }

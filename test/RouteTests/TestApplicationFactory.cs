@@ -54,7 +54,7 @@ internal class TestApplicationFactory
 
         app.MapControllerRoute(
             name: "MyArea",
-            pattern: "{area:exists}/{controller=MyArea}/{action=Default}/{id?}");
+            pattern: "{area:exists}/{controller=ControllerForMyArea}/{action=Default}/{id?}");
 
         app.MapControllerRoute(
             name: "FixedRouteWithConstraints",
