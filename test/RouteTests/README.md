@@ -6,15 +6,19 @@
 | [4](#4) | ConventionalRouting | GET /ConventionalRoute/NotFound | /ConventionalRoute/NotFound |  |  |  |  |
 | [5](#5) | ConventionalRouting | GET /SomePath/SomeString/2 | /SomePath/SomeString/2 | SomePath/{id}/{num:int} | SomePath/{id}/{num:int} | SomePath/{id}/{num:int} | ConventionalRoute/ActionWithStringParameter/{id}/{num} |
 | [6](#6) | ConventionalRouting | GET /SomePath/SomeString/NotAnInt | /SomePath/SomeString/NotAnInt |  |  |  |  |
-| [7](#7) | AttributeRouting | GET /AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute/Get |
-| [8](#8) | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get |
-| [9](#9) | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRoute/Get/{id} | AttributeRoute/Get/{id} | AttributeRoute/Get/{id} |
-| [10](#10) | AttributeRouting | GET /AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/GetWithActionNameInDifferentSpotInTemplate/{id} |
-| [11](#11) | AttributeRouting | GET /AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/GetWithActionNameInDifferentSpotInTemplate/{id} |
-| [12](#12) | RazorPages | GET / | / | /Index |  | /Index |  |
-| [13](#13) | RazorPages | GET /Index | Index | /Index | Index | /Index |  |
-| [14](#14) | RazorPages | GET /PageThatThrowsException | PageThatThrowsException | /PageThatThrowsException | PageThatThrowsException | /PageThatThrowsException |  |
-| [15](#15) | RazorPages | GET /js/site.js | /js/site.js |  |  |  |  |
+| [7](#7) | ConventionalRouting | GET /MyArea | /MyArea |  | {area:exists}/{controller=MyArea}/{action=Default}/{id?} | {area:exists}/MyArea/Default/{id?} | MyArea/Default |
+| [8](#8) | ConventionalRouting | GET /Dude | /Dude |  | Dude/{controller=AnotherArea}/{action=Index}/{id?} | Dude/AnotherArea/Index/{id?} | AnotherArea/Index |
+| [9](#9) | AttributeRouting | GET /AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute | AttributeRoute/Get |
+| [10](#10) | AttributeRouting | GET /AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get | AttributeRoute/Get |
+| [11](#11) | AttributeRouting | GET /AttributeRoute/Get/12 | AttributeRoute/Get/{id} | AttributeRoute/Get/{id?} | AttributeRoute/Get/{id} | AttributeRoute/Get/{id} | AttributeRoute/Get/{id} |
+| [12](#12) | AttributeRouting | GET /AttributeRoute/12/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/GetWithActionNameInDifferentSpotInTemplate/{id} |
+| [13](#13) | AttributeRouting | GET /AttributeRoute/NotAnInt/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/{id}/GetWithActionNameInDifferentSpotInTemplate | AttributeRoute/GetWithActionNameInDifferentSpotInTemplate/{id} |
+| [14](#14) | RazorPages | GET / | / | /Index |  | /Index |  |
+| [15](#15) | RazorPages | GET /Index | Index | /Index | Index | /Index |  |
+| [16](#16) | RazorPages | GET /PageThatThrowsException | PageThatThrowsException | /PageThatThrowsException | PageThatThrowsException | /PageThatThrowsException |  |
+| [17](#17) | RazorPages | GET /js/site.js | /js/site.js |  |  |  |  |
+| [18](#18) | MinimalApi | GET /MinimalApi | /MinimalApi |  |  |  |  |
+| [19](#19) | MinimalApi | GET /MinimalApi/123 | /MinimalApi/123 |  |  |  |  |
 
 #### 1
 
@@ -183,6 +187,60 @@
 ```json
 {
   "HttpMethod": "GET",
+  "Path": "/MyArea",
+  "HttpRouteByRawText": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
+  "HttpRouteByControllerActionAndParameters": "MyArea/Default",
+  "HttpRouteByActionDescriptor": "{area:exists}/MyArea/Default/{id?}",
+  "DebugInfo": {
+    "RawText": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
+    "RouteDiagnosticMetadata": "{area:exists}/{controller=MyArea}/{action=Default}/{id?}",
+    "RouteData": {
+      "controller": "MyArea",
+      "action": "Default",
+      "area": "MyArea"
+    },
+    "AttributeRouteInfo": null,
+    "ActionParameters": [],
+    "PageActionDescriptorRelativePath": null,
+    "PageActionDescriptorViewEnginePath": null,
+    "ControllerActionDescriptorControllerName": "MyArea",
+    "ControllerActionDescriptorActionName": "Default"
+  }
+}
+```
+
+#### 8
+
+```json
+{
+  "HttpMethod": "GET",
+  "Path": "/Dude",
+  "HttpRouteByRawText": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
+  "HttpRouteByControllerActionAndParameters": "AnotherArea/Index",
+  "HttpRouteByActionDescriptor": "Dude/AnotherArea/Index/{id?}",
+  "DebugInfo": {
+    "RawText": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
+    "RouteDiagnosticMetadata": "Dude/{controller=AnotherArea}/{action=Index}/{id?}",
+    "RouteData": {
+      "area": "AnotherArea",
+      "controller": "AnotherArea",
+      "action": "Index"
+    },
+    "AttributeRouteInfo": null,
+    "ActionParameters": [],
+    "PageActionDescriptorRelativePath": null,
+    "PageActionDescriptorViewEnginePath": null,
+    "ControllerActionDescriptorControllerName": "AnotherArea",
+    "ControllerActionDescriptorActionName": "Index"
+  }
+}
+```
+
+#### 9
+
+```json
+{
+  "HttpMethod": "GET",
   "Path": "/AttributeRoute",
   "HttpRouteByRawText": "AttributeRoute",
   "HttpRouteByControllerActionAndParameters": "AttributeRoute/Get",
@@ -204,7 +262,7 @@
 }
 ```
 
-#### 8
+#### 10
 
 ```json
 {
@@ -230,7 +288,7 @@
 }
 ```
 
-#### 9
+#### 11
 
 ```json
 {
@@ -259,7 +317,7 @@
 }
 ```
 
-#### 10
+#### 12
 
 ```json
 {
@@ -288,7 +346,7 @@
 }
 ```
 
-#### 11
+#### 13
 
 ```json
 {
@@ -317,7 +375,7 @@
 }
 ```
 
-#### 12
+#### 14
 
 ```json
 {
@@ -342,7 +400,7 @@
 }
 ```
 
-#### 13
+#### 15
 
 ```json
 {
@@ -367,7 +425,7 @@
 }
 ```
 
-#### 14
+#### 16
 
 ```json
 {
@@ -392,12 +450,58 @@
 }
 ```
 
-#### 15
+#### 17
 
 ```json
 {
   "HttpMethod": "GET",
   "Path": "/js/site.js",
+  "HttpRouteByRawText": null,
+  "HttpRouteByControllerActionAndParameters": "",
+  "HttpRouteByActionDescriptor": "",
+  "DebugInfo": {
+    "RawText": null,
+    "RouteDiagnosticMetadata": null,
+    "RouteData": {},
+    "AttributeRouteInfo": null,
+    "ActionParameters": null,
+    "PageActionDescriptorRelativePath": null,
+    "PageActionDescriptorViewEnginePath": null,
+    "ControllerActionDescriptorControllerName": null,
+    "ControllerActionDescriptorActionName": null
+  }
+}
+```
+
+#### 18
+
+```json
+{
+  "HttpMethod": "GET",
+  "Path": "/MinimalApi",
+  "HttpRouteByRawText": null,
+  "HttpRouteByControllerActionAndParameters": "",
+  "HttpRouteByActionDescriptor": "",
+  "DebugInfo": {
+    "RawText": null,
+    "RouteDiagnosticMetadata": null,
+    "RouteData": {},
+    "AttributeRouteInfo": null,
+    "ActionParameters": null,
+    "PageActionDescriptorRelativePath": null,
+    "PageActionDescriptorViewEnginePath": null,
+    "ControllerActionDescriptorControllerName": null,
+    "ControllerActionDescriptorActionName": null
+  }
+}
+```
+
+#### 19
+
+```json
+{
+  "HttpMethod": "GET",
+  "Path": "/MinimalApi/123",
   "HttpRouteByRawText": null,
   "HttpRouteByControllerActionAndParameters": "",
   "HttpRouteByActionDescriptor": "",

@@ -1,6 +1,5 @@
 [
     {
-        "debug": true,
         "testApplicationScenario": "ConventionalRouting",
         "httpMethod": "GET",
         "path": "/",
