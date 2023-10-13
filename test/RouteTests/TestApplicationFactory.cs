@@ -50,7 +50,7 @@ internal class TestApplicationFactory
         app.MapAreaControllerRoute(
             name: "AnotherArea",
             areaName: "AnotherArea",
-            pattern: "Dude/{controller=AnotherArea}/{action=Index}/{id?}");
+            pattern: "SomePrefix/{controller=AnotherArea}/{action=Index}/{id?}");
 
         app.MapControllerRoute(
             name: "MyArea",
