@@ -15,12 +15,16 @@ foreach (var item in testCases)
     results.Add(result);
 }
 
-sb.AppendLine("| | Scenario | Request | Activity.DisplayName | Expected http.route | Strategy 1 | Strategy 2 | Strategy 3 |");
-sb.AppendLine("| - | - | - | - | - | - | - | - |");
+sb.AppendLine("| | http.route | expected | routing type | request |");
+sb.AppendLine("| - | - | - | - | - |");
 
 for (var i = 0; i < results.Count; ++i)
 {
-    sb.Append($"| [{i + 1}](#{i + 1}) ");
+    var result = results[i];
+    var emoji = result.HttpRoute == result.TestCase.ExpectedHttpRoute
+        ? ":green_heart:"
+        : ":broken_heart:";
+    sb.Append($"| {emoji} [{i + 1}](#{i + 1}) ");
     sb.AppendLine(FormatTestResult(results[i]));
 }
 
@@ -41,11 +45,9 @@ string FormatTestResult(TestResult result)
     var testCase = result.TestCase!;
 
     return $"| {string.Join(" | ",
+        testCase.ExpectedHttpRoute,
+        result.HttpRoute,
         testCase.TestApplicationScenario,
         $"{testCase.HttpMethod} {testCase.Path}",
-        result.ActivityDisplayName,
-        testCase.ExpectedHttpRoute,
-        result.RouteInfo.HttpRouteByRawText,
-        result.RouteInfo.HttpRouteByActionDescriptor,
-        result.RouteInfo.HttpRouteByControllerActionAndParameters)} |";
+        result.ActivityDisplayName)} |";
 }
