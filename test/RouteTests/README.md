@@ -18,8 +18,8 @@
 | :broken_heart: | [16](#16) | Index | /Index | RazorPages | GET /Index | Index |
 | :broken_heart: | [17](#17) | PageThatThrowsException | /PageThatThrowsException | RazorPages | GET /PageThatThrowsException | PageThatThrowsException |
 | :broken_heart: | [18](#18) | /js/site.js |  | RazorPages | GET /js/site.js | /js/site.js |
-| :broken_heart: | [19](#19) | /MinimalApi |  | MinimalApi | GET /MinimalApi | /MinimalApi |
-| :broken_heart: | [20](#20) | /MinimalApi/123 |  | MinimalApi | GET /MinimalApi/123 | /MinimalApi/123 |
+| :broken_heart: | [19](#19) | /MinimalApi | TBD | MinimalApi | GET /MinimalApi | /MinimalApi |
+| :broken_heart: | [20](#20) | /MinimalApi/123 | TBD | MinimalApi | GET /MinimalApi/123 | /MinimalApi/123 |
 
 #### 1
 

@@ -130,13 +130,13 @@
         "httpMethod": "GET",
         "path": "/MinimalApi",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": ""
+        "expectedHttpRoute": "TBD"
     },
     {
         "testApplicationScenario": "MinimalApi",
         "httpMethod": "GET",
         "path": "/MinimalApi/123",
         "expectedStatusCode": 200,
-        "expectedHttpRoute": ""
+        "expectedHttpRoute": "TBD"
     }
 ]
